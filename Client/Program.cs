@@ -1,13 +1,21 @@
 ﻿using System;
+using System.ServiceModel;
 
-namespace HelloWorldClient
+namespace Client
 {
     class Program
     {
         static void Main(string[] args)
         {
-            HelloWorldServiceClient client = new HelloWorldServiceClient();
-            Console.WriteLine(client.GetMessage("Vladimir"));
+            //FileTransferService client = new FileTransferService();
+            try
+            {
+                //   Console.WriteLine(client.GetMessage("Vladimir"));
+            }
+            catch (EndpointNotFoundException e)
+            {
+                Console.WriteLine("Server not available... Did you even start it???");
+            }
         }
     }
 }

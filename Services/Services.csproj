@@ -40,8 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileTransferService.cs"/>
     <Compile Include="HelloWorldService.cs" />
+    <Compile Include="IFileTransferService.cs"/>
     <Compile Include="IHelloWorldService.cs" />
+    <!-- Add new services here!-->
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
