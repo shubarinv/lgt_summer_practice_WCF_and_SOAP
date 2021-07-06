@@ -14,32 +14,30 @@ namespace FileTransferFramework.Client
         /// <returns>a file transfer Response</returns>
         public FileTransferResponse Put(FileTransferRequest fileToPush)
         {
-            FileTransferResponse fileTransferResponse = this.CheckFileTransferRequest(fileToPush);
-            if (fileTransferResponse.ResponseStatus == "FileIsValed")
+            var fileTransferResponse = this.CheckFileTransferRequest(fileToPush);
+            if (fileTransferResponse.ResponseStatus != "FileIsValed") return fileTransferResponse;
+            try
             {
-                try
+                SaveFileStream(
+                    System.Configuration.ConfigurationManager.AppSettings["SavedLocation"] + "\\" +
+                    fileToPush.FileName, new MemoryStream(fileToPush.Content));
+                return new FileTransferResponse
                 {
-                    this.SaveFileStream(
-                        System.Configuration.ConfigurationManager.AppSettings["SavedLocation"] + "\\" +
-                        fileToPush.FileName, new MemoryStream(fileToPush.Content));
-                    return new FileTransferResponse
-                    {
-                        CreateAt = DateTime.Now,
-                        FileName = fileToPush.FileName,
-                        Message = "File was transfered",
-                        ResponseStatus = "Successful"
-                    };
-                }
-                catch (Exception ex)
+                    CreateAt = DateTime.Now,
+                    FileName = fileToPush.FileName,
+                    Message = "File was transfered",
+                    ResponseStatus = "Successful"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new FileTransferResponse
                 {
-                    return new FileTransferResponse
-                    {
-                        CreateAt = DateTime.Now,
-                        FileName = fileToPush.FileName,
-                        Message = ex.Message,
-                        ResponseStatus = "Error"
-                    };
-                }
+                    CreateAt = DateTime.Now,
+                    FileName = fileToPush.FileName,
+                    Message = ex.Message,
+                    ResponseStatus = "Error"
+                };
             }
 
             return fileTransferResponse;
@@ -53,30 +51,15 @@ namespace FileTransferFramework.Client
         /// <returns>File Transfer Response</returns>
         private FileTransferResponse CheckFileTransferRequest(FileTransferRequest fileToPush)
         {
-            if (fileToPush != null)
-            {
-                if (!string.IsNullOrEmpty(fileToPush.FileName))
+            if (fileToPush == null)
+                return new FileTransferResponse
                 {
-                    if (fileToPush.Content != null)
-                    {
-                        return new FileTransferResponse
-                        {
-                            CreateAt = DateTime.Now,
-                            FileName = fileToPush.FileName,
-                            Message = string.Empty,
-                            ResponseStatus = "FileIsValed"
-                        };
-                    }
-
-                    return new FileTransferResponse
-                    {
-                        CreateAt = DateTime.Now,
-                        FileName = "No Name",
-                        Message = " File Content is null",
-                        ResponseStatus = "Error"
-                    };
-                }
-
+                    CreateAt = DateTime.Now,
+                    FileName = "No Name",
+                    Message = " File Can't be Null",
+                    ResponseStatus = "Error"
+                };
+            if (string.IsNullOrEmpty(fileToPush.FileName))
                 return new FileTransferResponse
                 {
                     CreateAt = DateTime.Now,
@@ -84,13 +67,22 @@ namespace FileTransferFramework.Client
                     Message = " File Name Can't be Null",
                     ResponseStatus = "Error"
                 };
+            if (fileToPush.Content != null)
+            {
+                return new FileTransferResponse
+                {
+                    CreateAt = DateTime.Now,
+                    FileName = fileToPush.FileName,
+                    Message = string.Empty,
+                    ResponseStatus = "FileIsValed"
+                };
             }
 
             return new FileTransferResponse
             {
                 CreateAt = DateTime.Now,
                 FileName = "No Name",
-                Message = " File Can't be Null",
+                Message = " File Content is null",
                 ResponseStatus = "Error"
             };
         }
@@ -100,7 +92,7 @@ namespace FileTransferFramework.Client
         /// </summary>
         /// <param name="filePath">path to write the file in</param>
         /// <param name="stream">stream to write</param>
-        private void SaveFileStream(string filePath, Stream stream)
+        private static void SaveFileStream(string filePath, Stream stream)
         {
             try
             {
