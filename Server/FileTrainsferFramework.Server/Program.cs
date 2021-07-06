@@ -42,32 +42,30 @@ namespace FileTrainsferFramework.Server
             FileTransferResponse response = null;
             try
             {
-                if (IsFileLocked(e.FullPath) == false)
+                if (IsFileLocked(e.FullPath) != false) return;
+                var startAt = DateTime.Now;
+                var createdFile = new FileTransferRequest()
                 {
-                    DateTime startAt = DateTime.Now;
-                    FileTransferRequest createdFile = new FileTransferRequest()
-                    {
-                        FileName = e.Name,
-                        Content = File.ReadAllBytes(e.FullPath)
-                    };
+                    FileName = e.Name,
+                    Content = File.ReadAllBytes(e.FullPath)
+                };
 
-                    response = new FileTransferClient().Put(createdFile);
+                response = new FileTransferClient().Put(createdFile);
 
-                    if (response.ResponseStatus != "Successful")
-                    {
-                        MoveToFailedFolder(e);
-                    }
-                    else
-                    {
-                        if (File.Exists(e.FullPath))
-                        {
-                            File.Delete(e.FullPath);
-                        }
-                    }
-
-                    Console.WriteLine(response.ResponseStatus + " at: " + DateTime.Now.Subtract(startAt).ToString());
-                    new Logger().Create(e.Name, DateTime.Now, response.ResponseStatus, response.Message);
+                if (response.ResponseStatus != "Successful")
+                {
+                    MoveToFailedFolder(e);
                 }
+                else
+                {
+                    if (File.Exists(e.FullPath))
+                    {
+                        File.Delete(e.FullPath);
+                    }
+                }
+
+                Console.WriteLine(response.ResponseStatus + " at: " + DateTime.Now.Subtract(startAt).ToString());
+                new Logger().Create(e.Name, DateTime.Now, response.ResponseStatus, response.Message);
             }
             catch (System.ServiceModel.CommunicationException ex)
             {
