@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using FileTrainsferFramework.Server.ClientFileTransferServiceReference;
 
 namespace FileTrainsferFramework.Server
@@ -10,14 +9,7 @@ namespace FileTrainsferFramework.Server
     /// </summary>
     public class Program
     {
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
-
-        [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("Kernel32")]
-        private static extern IntPtr GetConsoleWindow();
 
         /// <summary>
         /// main Program 
@@ -27,10 +19,6 @@ namespace FileTrainsferFramework.Server
         {
             try
             {
-                IntPtr hwnd;
-                hwnd = GetConsoleWindow();
-                ShowWindow(hwnd, SW_HIDE);
-
                 FileSystemWatcher fileWatcher = new FileSystemWatcher(System.Configuration.ConfigurationManager
                     .AppSettings["FolderToWatch"].ToString());
                 fileWatcher.Created += FileWatcher_Created;
