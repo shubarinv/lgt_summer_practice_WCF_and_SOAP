@@ -1,0 +1,6 @@
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\bin\Debug\HelloWorldService.dll
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\bin\Debug\HelloWorldService.pdb
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\obj\Debug\HelloWorldService.csproj.AssemblyReference.cache
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\obj\Debug\HelloWorldService.csproj.CoreCompileInputs.cache
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\obj\Debug\HelloWorldService.dll
+C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldService\obj\Debug\HelloWorldService.pdb
