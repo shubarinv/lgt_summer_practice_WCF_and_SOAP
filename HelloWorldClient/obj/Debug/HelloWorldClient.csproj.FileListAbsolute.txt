@@ -1,7 +1,0 @@
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\bin\Debug\HelloWorldClient.exe.config
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\bin\Debug\HelloWorldClient.exe
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\bin\Debug\HelloWorldClient.pdb
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\obj\Debug\HelloWorldClient.csproj.AssemblyReference.cache
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\obj\Debug\HelloWorldClient.csproj.CoreCompileInputs.cache
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\obj\Debug\HelloWorldClient.exe
-C:\Users\user\RiderProjects\WCF_and_SOAP_rewrite\HelloWorldClient\obj\Debug\HelloWorldClient.pdb
