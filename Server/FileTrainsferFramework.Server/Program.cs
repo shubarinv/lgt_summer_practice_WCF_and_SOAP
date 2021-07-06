@@ -9,8 +9,6 @@ namespace FileTrainsferFramework.Server
     /// </summary>
     public class Program
     {
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
         /// <summary>
         /// main Program 
         /// </summary>
@@ -19,8 +17,8 @@ namespace FileTrainsferFramework.Server
         {
             try
             {
-                FileSystemWatcher fileWatcher = new FileSystemWatcher(System.Configuration.ConfigurationManager
-                    .AppSettings["FolderToWatch"].ToString());
+                var fileWatcher =
+                    new FileSystemWatcher(System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"]);
                 fileWatcher.Created += FileWatcher_Created;
                 fileWatcher.EnableRaisingEvents = true;
                 Console.WriteLine("Watcher Started...");
@@ -97,15 +95,15 @@ namespace FileTrainsferFramework.Server
         /// <param name="e">e file system event args</param>
         private static void MoveToFailedFolder(FileSystemEventArgs e)
         {
-            if (File.Exists(System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"].ToString() +
+            if (File.Exists(System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"] +
                             "\\failed\\" + e.Name))
             {
-                File.Delete(System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"].ToString() +
+                File.Delete(System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"] +
                             "\\failed\\" + e.Name);
             }
 
             File.Move(e.FullPath,
-                System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"].ToString() + "\\failed\\" +
+                System.Configuration.ConfigurationManager.AppSettings["FolderToWatch"] + "\\failed\\" +
                 e.Name);
         }
 
@@ -118,10 +116,10 @@ namespace FileTrainsferFramework.Server
         {
             try
             {
-                int numberOfTying = 1;
+                var numberOfTying = 1;
                 while (numberOfTying <= 10)
                 {
-                    if (File.Exists(filePath) == true)
+                    if (File.Exists(filePath))
                     {
                         FileStream stream = null;
                         try
@@ -141,7 +139,6 @@ namespace FileTrainsferFramework.Server
                             if (stream != null)
                             {
                                 stream.Close();
-                                stream = null;
                             }
                         }
                     }

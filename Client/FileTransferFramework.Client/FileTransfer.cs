@@ -20,7 +20,7 @@ namespace FileTransferFramework.Client
                 try
                 {
                     this.SaveFileStream(
-                        System.Configuration.ConfigurationManager.AppSettings["SavedLocation"].ToString() + "\\" +
+                        System.Configuration.ConfigurationManager.AppSettings["SavedLocation"] + "\\" +
                         fileToPush.FileName, new MemoryStream(fileToPush.Content));
                     return new FileTransferResponse
                     {
