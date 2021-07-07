@@ -50,8 +50,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Logger.cs"/>
         <Compile Include="Program.cs"/>
+        <Compile Include="IService.cs"/>
+        <Compile Include="Service.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
@@ -59,43 +60,6 @@
             <SubType>Designer</SubType>
         </None>
         <None Include="packages.config"/>
-        <None Include="Service References\ClientFileTransferServiceReference\FileTransfer.wsdl"/>
-        <None Include="Service References\ClientFileTransferServiceReference\StreamService.xsd">
-            <SubType>Designer</SubType>
-        </None>
-        <None Include="Service References\ClientFileTransferServiceReference\StreamService3.xsd">
-            <SubType>Designer</SubType>
-        </None>
-        <None Include="Service References\ClientFileTransferServiceReference\StreamService4.xsd">
-            <SubType>Designer</SubType>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <WCFMetadata Include="Service References\"/>
-    </ItemGroup>
-    <ItemGroup>
-        <WCFMetadataStorage Include="Service References\ClientFileTransferServiceReference\"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="Service References\ClientFileTransferServiceReference\StreamService.disco"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="Service References\ClientFileTransferServiceReference\configuration91.svcinfo"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="Service References\ClientFileTransferServiceReference\configuration.svcinfo"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="Service References\ClientFileTransferServiceReference\Reference.svcmap">
-            <Generator>WCF Proxy Generator</Generator>
-            <LastGenOutput>Reference.cs</LastGenOutput>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\Client\FileTransferFramework.Client\FileTransferFramework.Client.csproj">
-            <Project>{59dc7bc2-a2d2-4065-95f0-b853599ebf03}</Project>
-            <Name>FileTransferFramework.Client</Name>
-        </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
