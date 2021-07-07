@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using FileTrainsferFramework.Server.ClientFileTransferServiceReference;
+using FileTransferFramework.Client;
 
 namespace FileTrainsferFramework.Server
 {
@@ -47,10 +47,11 @@ namespace FileTrainsferFramework.Server
                 var createdFile = new FileTransferRequest()
                 {
                     FileName = e.Name,
-                    Content = File.ReadAllBytes(e.FullPath) // Todo: Use stream
+                    Content = File.ReadAllBytes(e.FullPath), // Todo: Use stream
+                    Hash = "0",
                 };
 
-                response = new FileTransferClient().Put(createdFile);
+                response = new FileTransfer().Put(createdFile);
 
                 if (response.ResponseStatus != "Successful")
                 {

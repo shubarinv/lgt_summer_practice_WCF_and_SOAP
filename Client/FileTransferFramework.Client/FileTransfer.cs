@@ -15,7 +15,7 @@ namespace FileTransferFramework.Client
         public FileTransferResponse Put(FileTransferRequest fileToPush)
         {
             var fileTransferResponse = this.CheckFileTransferRequest(fileToPush);
-            if (fileTransferResponse.ResponseStatus != "FileIsValed") return fileTransferResponse;
+            if (fileTransferResponse.ResponseStatus != "FileIsValid") return fileTransferResponse;
             try
             {
                 SaveFileStream(
@@ -25,7 +25,7 @@ namespace FileTransferFramework.Client
                 {
                     CreateAt = DateTime.Now,
                     FileName = fileToPush.FileName,
-                    Message = "File was transfered",
+                    Message = "File was transferred",
                     ResponseStatus = "Successful"
                 };
             }
@@ -39,8 +39,6 @@ namespace FileTransferFramework.Client
                     ResponseStatus = "Error"
                 };
             }
-
-            return fileTransferResponse;
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace FileTransferFramework.Client
                     CreateAt = DateTime.Now,
                     FileName = fileToPush.FileName,
                     Message = string.Empty,
-                    ResponseStatus = "FileIsValed"
+                    ResponseStatus = "FileIsValid"
                 };
             }
 
@@ -107,7 +105,7 @@ namespace FileTransferFramework.Client
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
     }

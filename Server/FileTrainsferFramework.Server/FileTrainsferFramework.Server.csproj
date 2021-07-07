@@ -53,11 +53,6 @@
         <Compile Include="Logger.cs"/>
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="Service References\ClientFileTransferServiceReference\Reference.cs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Reference.svcmap</DependentUpon>
-        </Compile>
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config">
@@ -95,6 +90,12 @@
             <Generator>WCF Proxy Generator</Generator>
             <LastGenOutput>Reference.cs</LastGenOutput>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Client\FileTransferFramework.Client\FileTransferFramework.Client.csproj">
+            <Project>{59dc7bc2-a2d2-4065-95f0-b853599ebf03}</Project>
+            <Name>FileTransferFramework.Client</Name>
+        </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

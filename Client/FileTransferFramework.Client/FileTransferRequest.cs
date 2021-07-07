@@ -15,5 +15,6 @@ namespace FileTransferFramework.Client
         public string FileName { get; set; }
 
         [DataMember] public byte[] Content { get; set; }
+        [DataMember] public string Hash { get; set; }
     }
 }
