@@ -13,7 +13,7 @@ namespace FileTrainsferFramework.Server
         /// main Program 
         /// </summary>
         /// <param name="args">args of the file</param>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace FileTrainsferFramework.Server
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                new Logger().Create("Service not started", DateTime.Now, "Error", ex.Message);
+                Console.WriteLine("Service not started {0} {1} {2}", DateTime.Now, "Error", ex.Message);
             }
 
             Console.ReadKey();
@@ -47,7 +47,7 @@ namespace FileTrainsferFramework.Server
                 var createdFile = new FileTransferRequest()
                 {
                     FileName = e.Name,
-                    Content = File.ReadAllBytes(e.FullPath)
+                    Content = File.ReadAllBytes(e.FullPath) // Todo: Use stream
                 };
 
                 response = new FileTransferClient().Put(createdFile);
@@ -64,25 +64,25 @@ namespace FileTrainsferFramework.Server
                     }
                 }
 
-                Console.WriteLine(response.ResponseStatus + " at: " + DateTime.Now.Subtract(startAt).ToString());
-                new Logger().Create(e.Name, DateTime.Now, response.ResponseStatus, response.Message);
+                Console.WriteLine(response.ResponseStatus + " at: " + DateTime.Now.Subtract(startAt));
+                Console.WriteLine("{0} {1} {2} {3}", e.Name, DateTime.Now, response.ResponseStatus, response.Message);
             }
             catch (System.ServiceModel.CommunicationException ex)
             {
                 MoveToFailedFolder(e);
                 Console.WriteLine(ex.Message);
-                new Logger().Create(e.Name, DateTime.Now, "Error", ex.Message);
+                Console.WriteLine(e.Name, DateTime.Now, "Error", ex.Message);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 if (response != null)
                 {
-                    new Logger().Create(e.Name, DateTime.Now, response.ResponseStatus, response.Message);
+                    Console.WriteLine(e.Name, DateTime.Now, response.ResponseStatus, response.Message);
                 }
                 else
                 {
-                    new Logger().Create(e.Name, DateTime.Now, "Error", ex.Message);
+                    Console.WriteLine(e.Name, DateTime.Now, "Error", ex.Message);
                 }
             }
         }
@@ -134,10 +134,7 @@ namespace FileTrainsferFramework.Server
                         }
                         finally
                         {
-                            if (stream != null)
-                            {
-                                stream.Close();
-                            }
+                            stream?.Close();
                         }
                     }
 
@@ -148,7 +145,7 @@ namespace FileTrainsferFramework.Server
             }
             catch (Exception ex)
             {
-                new Logger().Create(filePath, DateTime.Now, "Error", ex.Message);
+                Console.WriteLine("{0} {1} {2} {3}", filePath, DateTime.Now, "Error", ex.Message);
                 return true;
             }
         }
