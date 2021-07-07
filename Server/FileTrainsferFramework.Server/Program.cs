@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using FileTransferFramework.Client;
 
 namespace FileTrainsferFramework.Server
@@ -42,13 +44,13 @@ namespace FileTrainsferFramework.Server
             FileTransferResponse response = null;
             try
             {
-                if (IsFileLocked(e.FullPath) != false) return;
+                if (IsFileLocked(e.FullPath)) return;
                 var startAt = DateTime.Now;
-                var createdFile = new FileTransferRequest()
+                var createdFile = new FileTransferRequest
                 {
                     FileName = e.Name,
                     Content = File.ReadAllBytes(e.FullPath), // Todo: Use stream
-                    Hash = "0",
+                    Hash = CalculateMd5(e.FullPath),
                 };
 
                 response = new FileTransfer().Put(createdFile);
@@ -148,6 +150,17 @@ namespace FileTrainsferFramework.Server
             {
                 Console.WriteLine("{0} {1} {2} {3}", filePath, DateTime.Now, "Error", ex.Message);
                 return true;
+            }
+        }
+
+        private static string CalculateMd5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    return Encoding.Default.GetString(md5.ComputeHash(stream));
+                }
             }
         }
     }

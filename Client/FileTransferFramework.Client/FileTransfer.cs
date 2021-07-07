@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.ServiceModel;
+using System.Text;
 
 namespace FileTransferFramework.Client
 {
@@ -14,19 +16,34 @@ namespace FileTransferFramework.Client
         /// <returns>a file transfer Response</returns>
         public FileTransferResponse Put(FileTransferRequest fileToPush)
         {
-            var fileTransferResponse = this.CheckFileTransferRequest(fileToPush);
+            var fileTransferResponse = CheckFileTransferRequest(fileToPush);
             if (fileTransferResponse.ResponseStatus != "FileIsValid") return fileTransferResponse;
             try
             {
                 SaveFileStream(
                     System.Configuration.ConfigurationManager.AppSettings["SavedLocation"] + "\\" +
                     fileToPush.FileName, new MemoryStream(fileToPush.Content));
+
+                if (CalculateMd5(System.Configuration.ConfigurationManager.AppSettings["SavedLocation"] + "\\" +
+                                 fileToPush.FileName) == fileToPush.Hash)
+                {
+                    Console.WriteLine("Caches converged!");
+                    return new FileTransferResponse
+                    {
+                        CreateAt = DateTime.Now,
+                        FileName = fileToPush.FileName,
+                        Message = "File was transferred",
+                        ResponseStatus = "Successful"
+                    };
+                }
+
+                Console.WriteLine("Caches are different, file is invalid!");
                 return new FileTransferResponse
                 {
                     CreateAt = DateTime.Now,
                     FileName = fileToPush.FileName,
-                    Message = "File was transferred",
-                    ResponseStatus = "Successful"
+                    Message = "File broken",
+                    ResponseStatus = "Wrong MD5"
                 };
             }
             catch (Exception ex)
@@ -43,7 +60,7 @@ namespace FileTransferFramework.Client
 
         /// <summary>
         /// Check From file Transfer Object is not null 
-        /// and all properties is set
+        /// and all properties are set
         /// </summary>
         /// <param name="fileToPush">file to check</param>
         /// <returns>File Transfer Response</returns>
@@ -106,6 +123,17 @@ namespace FileTransferFramework.Client
             catch (Exception ex)
             {
                 throw;
+            }
+        }
+
+        private static string CalculateMd5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    return Encoding.Default.GetString(md5.ComputeHash(stream));
+                }
             }
         }
     }
