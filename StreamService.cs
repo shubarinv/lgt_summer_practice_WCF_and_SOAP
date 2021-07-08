@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-
 namespace Service
 {
     using System.Runtime.Serialization;
@@ -142,7 +140,7 @@ public partial class FileDownloadMessage
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
 [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
 [System.ServiceModel.MessageContractAttribute(WrapperName="FileDownloadReturnMessage", WrapperNamespace="http://tempuri.org/", IsWrapped=true)]
-public partial class FileDownloadReturnMessage : IDisposable
+public partial class FileDownloadReturnMessage
 {
     
     [System.ServiceModel.MessageHeaderAttribute(Namespace="http://tempuri.org/")]
@@ -159,11 +157,6 @@ public partial class FileDownloadReturnMessage : IDisposable
     {
         this.DownloadedFileMetadata = DownloadedFileMetadata;
         this.FileByteStream = FileByteStream;
-    }
-
-    public void Dispose()
-    {
-        throw new NotImplementedException();
     }
 }
 
@@ -217,9 +210,12 @@ public partial class StreamClient : System.ServiceModel.ClientBase<IStream>, ISt
         base.Channel.UploadFile(request);
     }
     
-    public void UploadFile(FileUploadMessage request)
+    public void UploadFile(Service.FileMetaData Metadata, System.IO.Stream FileByteStream)
     {
-        ((IStream)(this)).UploadFile(request);
+        FileUploadMessage inValue = new FileUploadMessage();
+        inValue.Metadata = Metadata;
+        inValue.FileByteStream = FileByteStream;
+        ((IStream)(this)).UploadFile(inValue);
     }
     
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -242,9 +238,13 @@ public partial class StreamClient : System.ServiceModel.ClientBase<IStream>, ISt
         return base.Channel.DownloadFile(request);
     }
     
-    public FileDownloadReturnMessage DownloadFile(FileDownloadMessage request)
+    public Service.FileMetaData DownloadFile(Service.FileMetaData FileMetaData, out System.IO.Stream FileByteStream)
     {
-        return ((IStream)(this)).DownloadFile(request);
+        FileDownloadMessage inValue = new FileDownloadMessage();
+        inValue.FileMetaData = FileMetaData;
+        FileDownloadReturnMessage retVal = ((IStream)(this)).DownloadFile(inValue);
+        FileByteStream = retVal.FileByteStream;
+        return retVal.DownloadedFileMetadata;
     }
     
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]

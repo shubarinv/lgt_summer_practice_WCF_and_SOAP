@@ -14,6 +14,7 @@ namespace FileTrainsferFramework.Server
 
                 Console.WriteLine("Press Any Key to end");
                 Console.ReadKey();
+                serviceHost.Close();
             }
         }
     }

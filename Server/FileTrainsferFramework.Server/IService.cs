@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -10,16 +10,56 @@ namespace Service
         [OperationContract]
         Stream GetLargeObject();
 
-        Task GetChunkedObject(string fileName);
+        [OperationContract(IsOneWay = true)]
+        void UploadFile(FileUploadMessage request);
+
+        [OperationContract(IsOneWay = false)]
+        FileDownloadReturnMessage DownloadFile(FileDownloadMessage request);
     }
 
     [MessageContract]
-    public class ChunkMsg
+    public class FileUploadMessage
     {
-        [MessageBodyMember(Order = 5)] public byte[] Chunk;
-        [MessageBodyMember(Order = 4)] public int ChunkSize;
-        [MessageBodyMember(Order = 1)] public string FileName;
-        [MessageBodyMember(Order = 2)] public long FileSize;
-        [MessageBodyMember(Order = 3)] public string Md5Cache;
+        [MessageBodyMember(Order = 1)] public Stream FileByteStream;
+
+        [MessageHeader(MustUnderstand = true)] public FileMetaData Metadata;
+    }
+
+    [MessageContract]
+    public class FileDownloadMessage
+    {
+        [MessageHeader(MustUnderstand = true)] public FileMetaData FileMetaData;
+    }
+
+    [MessageContract]
+    public class FileDownloadReturnMessage
+    {
+        [MessageHeader(MustUnderstand = true)] public FileMetaData DownloadedFileMetadata;
+
+        [MessageBodyMember(Order = 1)] public Stream FileByteStream;
+
+        public FileDownloadReturnMessage(FileMetaData metaData, Stream stream)
+        {
+            this.DownloadedFileMetadata = metaData;
+            this.FileByteStream = stream;
+        }
+    }
+
+    [DataContract]
+    public class FileMetaData
+    {
+        [DataMember(Name = "localFilename", Order = 0, IsRequired = false)]
+        public string LocalFileName;
+
+        [DataMember(Name = "remoteFilename", Order = 1, IsRequired = false)]
+        public string RemoteFileName;
+
+        public FileMetaData(
+            string localFileName,
+            string remoteFileName)
+        {
+            this.LocalFileName = localFileName;
+            this.RemoteFileName = remoteFileName;
+        }
     }
 }

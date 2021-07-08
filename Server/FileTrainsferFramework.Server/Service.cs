@@ -3,7 +3,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -29,35 +28,57 @@ namespace Service
             }
         }
 
-        public async Task GetChunkedObject(string fileName)
+        public void UploadFile(FileUploadMessage request)
         {
-            string filePath = "transfer/" + fileName;
-            if (File.Exists(filePath))
+            // parameters validation omitted for clarity
+
+            try
             {
-                var fileInfo = new FileInfo(filePath);
-                var chunk = new ChunkMsg
+                string basePath = "transfer/";
+                string serverFileName = Path.Combine(basePath, request.Metadata.RemoteFileName);
+
+                using (FileStream outfile = new FileStream(serverFileName, FileMode.Create))
                 {
-                    FileName = fileName,
-                    FileSize = fileInfo.Length,
-                    Md5Cache = CalculateMd5(filePath),
-                };
-                const int chunkSize = 64 * 1024;
-                var fileBytes = File.ReadAllBytes(filePath);
-                var fileChunk = new byte[chunkSize];
-                var offset = 0;
+                    const int bufferSize = 65536; // 64K
 
-                while (offset < fileBytes.Length)
-                {
-                    var length = Math.Min(chunkSize, fileBytes.Length - offset);
-                    Buffer.BlockCopy(fileBytes, offset, fileChunk, 0, length);
 
-                    offset += length;
+                    Byte[] buffer = new Byte[bufferSize];
+                    int bytesRead = request.FileByteStream.Read(buffer, 0, bufferSize);
 
-                    chunk.ChunkSize = length;
-                    chunk.Chunk = fileChunk;
+                    while (bytesRead > 0)
+                    {
+                        outfile.Write(buffer, 0, bytesRead);
+                        bytesRead = request.FileByteStream.Read(buffer, 0, bufferSize);
+                    }
                 }
             }
+            catch (IOException e)
+            {
+                throw;
+            }
         }
+
+        public FileDownloadReturnMessage DownloadFile(FileDownloadMessage request)
+        {
+            // parameters validation omitted for clarity
+
+            string localFileName = request.FileMetaData.LocalFileName;
+
+            try
+            {
+                string basePath = "transfer/";
+                string serverFileName = Path.Combine(basePath, request.FileMetaData.RemoteFileName);
+
+                Stream fs = new FileStream(serverFileName, FileMode.Open);
+
+                return new FileDownloadReturnMessage(new FileMetaData(localFileName, serverFileName), fs);
+            }
+            catch (IOException e)
+            {
+                throw;
+            }
+        }
+
 
         private static string CalculateMd5(string filename)
         {
