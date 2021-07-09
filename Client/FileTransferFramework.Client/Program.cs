@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
-using Service;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Client
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             try
             {
@@ -15,7 +16,10 @@ namespace Client
                 {
                     streamClient.Open();
 
-                    await ReadStream(streamClient);
+                    RequestFile("test_file1GB.txt", streamClient);
+                    RequestFile("test_file1GB.txt", streamClient);
+                    RequestFile("test_file1GB.txt", streamClient);
+                    RequestFile("test_file1GB.txt", streamClient);
                     streamClient.Close();
                 }
 
@@ -28,22 +32,36 @@ namespace Client
             }
         }
 
-        static async Task ReadStream(StreamClient streamClient)
+        static void RequestFile(string filename, IStream streamClient)
         {
-            using (var fileStream = new FileStream("transfer/test_file.txt", FileMode.Create))
+            var timer = new Stopwatch();
+            timer.Start();
+
+
+            Console.WriteLine("Started transfer of {0}", filename);
+            using (var fileStream = new FileStream("transfer/" + filename, FileMode.Create))
             {
-                const int bufferSize = 65536; // 64K
+                streamClient.GetLargeObject(filename).CopyTo(fileStream);
+            }
 
+            timer.Stop();
+            var timeTaken = timer.Elapsed;
+            Console.WriteLine("File {0} was transferred", filename);
+            Console.WriteLine("Time taken: " + timeTaken.ToString(@"G"));
+            Console.WriteLine(
+                streamClient.WasFileTransferredSuccessfully(filename, CalculateMd5("transfer/" + filename))
+                    ? "Caches converged! File transfer was successful!"
+                    : "Caches are different :( File is broken");
+            Console.WriteLine("===============");
+        }
 
-                Byte[] buffer = new Byte[bufferSize];
-                var bytesRead = streamClient.GetLargeObject().ReadAsync(buffer, 0, bufferSize);
-                long transferred = bytesRead.Result;
-                while (bytesRead.Result > 0)
+        private static string CalculateMd5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
                 {
-                    await fileStream.WriteAsync(buffer, 0, bytesRead.Result);
-                    bytesRead = streamClient.GetLargeObject().ReadAsync(buffer, 0, bufferSize);
-                    transferred += bytesRead.Result;
-                    Console.WriteLine("Transferred: {0} Mb ({1} bytes)", transferred / 1024 / 1024, transferred);
+                    return Encoding.Default.GetString(md5.ComputeHash(stream));
                 }
             }
         }

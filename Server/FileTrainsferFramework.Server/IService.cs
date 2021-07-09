@@ -7,6 +7,12 @@ namespace Service
     public interface IStream
     {
         [OperationContract]
-        Stream GetLargeObject();
+        Stream GetLargeObject(string filename);
+
+        [OperationContract]
+        string GetObjectHash(string filename);
+
+        [OperationContract]
+        bool WasFileTransferredSuccessfully(string filename, string hash);
     }
 }
