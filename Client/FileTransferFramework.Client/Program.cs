@@ -16,10 +16,10 @@ namespace Client
                 {
                     streamClient.Open();
 
-                    RequestFile("test_file1GB.txt", streamClient);
-                    RequestFile("test_file1GB.txt", streamClient);
-                    RequestFile("test_file1GB.txt", streamClient);
-                    RequestFile("test_file1GB.txt", streamClient);
+                    RequestFile("test_file1GB.txt.exe", streamClient);
+                    RequestFile("test_file1GB.txt.exe", streamClient);
+                    RequestFile("test_file1GB.txt.exe", streamClient);
+                    RequestFile("test_file1GB.txt.exe", streamClient);
                     streamClient.Close();
                 }
 
